@@ -3,63 +3,48 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Facades\ApiResponse;
+use App\Services\CategoryService;
+use App\Http\Resources\CategoryResource;
+use App\Http\Requests\Dashboard\Categories\CategoryStoreRequest;
+use App\Http\Requests\Dashboard\Categories\CategoryUpdateRequest;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $categories = Category::all();
+        return ApiResponse::success(CategoryResource::collection($categories));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(CategoryStoreRequest $request, CategoryService $service)
     {
-        //
+        try {
+            $category = $service->create($request->validated());
+            return ApiResponse::created(new CategoryResource($category));
+        } catch (\Exception $e) {
+            return ApiResponse::serverError('An error occurred while processing, please try again.');
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Category $category)
     {
-        //
+        return ApiResponse::success(new CategoryResource($category));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Category $category)
+    public function update(CategoryUpdateRequest $request, Category $category, CategoryService $service)
     {
-        //
+        try {
+            $category = $service->update($category, $request->validated());
+            return ApiResponse::updated(new CategoryResource($category));
+        } catch (\Exception $e) {
+            return ApiResponse::serverError('An error occurred while processing, please try again.');
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Category $category)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return ApiResponse::deleted();
     }
 }

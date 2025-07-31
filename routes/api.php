@@ -3,6 +3,7 @@
 use App\Http\Controllers\Application\Auth\AuthController;
 use App\Http\Controllers\Application\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('signup', [AuthController::class, 'signUp']);
@@ -32,3 +33,4 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:verified']], function 
 
 
 
+Route::apiResource('categories', CategoryController::class);
