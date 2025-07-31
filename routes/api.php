@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Application\Auth\AuthController;
 use App\Http\Controllers\Application\Auth\ResetPasswordController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login']);
@@ -23,6 +24,8 @@ Route::prefix('password')->group(function (){
 Route::group(['middleware' => ['auth:sanctum', 'abilities:verified']], function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
+
+Route::apiResource('categories', CategoryController::class);
 
 
 
