@@ -38,8 +38,8 @@ Abstract class AbstractApiRequest extends FormRequest
 
         if (!empty($errors)) {
             $formedErrors = [];
-            foreach ($errors as $filed => $message) {
-                $formedErrors[$filed] = $message[0];
+            foreach ($errors as $field => $message) {
+                $formedErrors[$field] = $message[0];
             }
             throw new HttpResponseException(
                 ApiResponse::validationError($formedErrors)

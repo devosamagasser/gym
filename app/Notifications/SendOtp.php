@@ -14,9 +14,9 @@ class SendOtp extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct($tpye)
+    public function __construct($type)
     {
-        $this->type = $tpye;
+        $this->type = $type;
     }
 
     /**
