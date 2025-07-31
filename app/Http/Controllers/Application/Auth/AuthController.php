@@ -102,7 +102,7 @@ class AuthController extends Controller
 
             $user->email_verified_at = now();
             $user->save();
-            DB::table('otps')->where('identifier', $request->email)->delete();
+            DB::table('otps')->where('identifier', $user->email)->delete();
 
             $user->tokens()->delete();
             $token = $user->createToken('User Token',['verified'])->plainTextToken;
@@ -129,7 +129,7 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $requset)
+    public function logout(Request $request)
     {
         if ($user = auth()->user()) {
             $user->tokens()->delete();

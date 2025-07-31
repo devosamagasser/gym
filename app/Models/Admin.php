@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use EloquentFilter\Filterable;
+use App\ModelFilters\AdminFilter;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +14,7 @@ class Admin extends Authenticatable
 {
     
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, Filterable;
 
     /**
      * The attributes that are mass assignable.
@@ -47,5 +49,11 @@ class Admin extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+
+        public function modelFilter()
+    {
+        return $this->provideFilter(AdminFilter::class);
     }
 }

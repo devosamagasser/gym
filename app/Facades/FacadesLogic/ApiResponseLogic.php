@@ -36,7 +36,7 @@ class ApiResponseLogic
             Response::HTTP_NOT_FOUND);
     }
 
-    public function serverError($message = 'Faild to process this action, please try again.')
+    public function serverError($message = 'failed to process this action, please try again.')
     {
         return $this->apiFormat(
             null,

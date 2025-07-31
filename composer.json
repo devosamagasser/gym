@@ -7,11 +7,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "astrotomic/laravel-translatable": "^11.16",
         "ichtrojan/laravel-otp": "^2.0",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
-        "spatie/laravel-permission": "^6.21"
+        "spatie/laravel-medialibrary": "^11.13",
+        "spatie/laravel-permission": "^6.21",
+        "tucker-eric/eloquentfilter": "^3.5"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

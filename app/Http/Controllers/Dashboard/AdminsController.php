@@ -1,40 +1,31 @@
 <?php
+
 namespace App\Http\Controllers\Dashboard;
 
 use App\Models\Admin;
-use Illuminate\Http\Request;
 use App\Facades\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\Admins\AdminStoreRequest;
+use App\Http\Requests\Dashboard\Admins\AdminUpdateRequest;
 
 class AdminsController extends Controller
 {
     public function index()
     {
-        $admins = Admin::paginate();
-
+        $limit = request()->query('limit', 10);
+        $admins = Admin::filter(request()->all())->paginate($limit);
         return ApiResponse::success($admins);
     }
 
-    public function store(Request $request)
+    public function store(AdminStoreRequest $request)
     {
         try {
-            $data = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:admins,email',
-                'password' => 'required|string|min:8|confirmed',
-                'role' => 'sometimes|in:super_admin,admin',
-                'is_active' => 'sometimes|boolean',
-            ]);
-
+            $data = $request->validated();
             $admin = Admin::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'password' => $data['password'],
-                'role' => $data['role'] ?? 'admin',
-                'is_active' => $data['is_active'] ?? true,
-            ]);
-
-            $admin->assignRole($admin->role);
+                'password' => '12345678',
+            ])->assignRole('admin');
 
             return ApiResponse::created($admin);
         } catch (\Exception $e) {
@@ -47,26 +38,18 @@ class AdminsController extends Controller
         return ApiResponse::success($admin);
     }
 
-    public function update(Request $request, Admin $admin)
+    public function update(AdminUpdateRequest $request, Admin $admin)
     {
         try {
-            $data = $request->validate([
-                'name' => 'sometimes|required|string|max:255',
-                'email' => 'sometimes|required|email|unique:admins,email,' . $admin->id,
-                'password' => 'sometimes|required|string|min:8|confirmed',
-                'role' => 'sometimes|in:super_admin,admin',
-                'is_active' => 'sometimes|boolean',
-            ]);
-
-            $admin->update($data);
-
-            if (array_key_exists('role', $data)) {
-                $admin->syncRoles([$data['role']]);
+            $data = $request->validated();
+            if (!isset($data['password'])) {
+                unset($data['password']);
             }
+            $admin->update($data);
 
             return ApiResponse::updated($admin);
         } catch (\Exception $e) {
-            return ApiResponse::serverError('An error occurred while processing, please try again.');
+            return ApiResponse::serverError($e->getMessage() ?: 'An error occurred while processing, please try again.');
         }
     }
 
@@ -74,7 +57,6 @@ class AdminsController extends Controller
     {
         try {
             $admin->delete();
-
             return ApiResponse::deleted();
         } catch (\Exception $e) {
             return ApiResponse::serverError('An error occurred while processing, please try again.');
