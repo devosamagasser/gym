@@ -1,19 +1,31 @@
 <?php
 
+use App\Http\Controllers\Application\Auth\AuthController;
+use App\Http\Controllers\Application\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Application\UsersController;
 
-Route::post('signup', [UsersController::class, 'signUp']);
-
-Route::post('login', [UsersController::class, 'login']);
-Route::post('forgot-password', [UsersController::class, 'forgotPassword']);
-Route::post('reset-password', [UsersController::class, 'resetPassword']);
-
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('resend-otp', [UsersController::class, 'resendOtp']);
-    Route::post('verify-email', [UsersController::class, 'verifyEmail']);
-    Route::get('profile', [UsersController::class, 'profile']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('signup', [AuthController::class, 'signUp']);
+Route::post('resend-otp', [AuthController::class, 'resendOtp']);
+Route::post('verify-email', [AuthController::class, 'verifyEmail'])
+    ->middleware(['auth:sanctum', 'abilities:not-verified']);
+    
+Route::prefix('password')->group(function (){
+    Route::post('forgot', [ResetPasswordController::class, 'forgotPassword']);
+    Route::post('verification', [ResetPasswordController::class, 'resetPasswordVerification']);
+    Route::put('reset', [ResetPasswordController::class, 'resetPassword'])
+    ->middleware([
+        'auth:sanctum', 
+        'abilities:reset-password'
+    ]);
 });
+
+Route::group(['middleware' => ['auth:sanctum', 'abilities:verified']], function () {
+    Route::post('logout', [AuthController::class, 'logout']);
+});
+
+
+
 
 
 

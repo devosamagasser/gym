@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Application\Auth;
+namespace App\Http\Requests\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\AbstractApiRequest;
 
-class SignupRequest extends FormRequest
+class LoginRequest extends AbstractApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,8 @@ class SignupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email|max:255',
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
         ];
     }
 }

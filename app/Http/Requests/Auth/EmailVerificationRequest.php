@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Application\Auth;
+namespace App\Http\Requests\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\AbstractApiRequest;
 
-class ResetPasswordRequest extends FormRequest
+class EmailVerificationRequest extends AbstractApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,7 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|max:255',
-            'otp' => 'required|numeric|digits:6',
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|email|exists:users,email',
         ];
     }
 }

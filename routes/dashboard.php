@@ -2,12 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\AdminsController;
+use App\Http\Controllers\Dashboard\AuthController;
 
-Route::post('login', [AdminsController::class, 'login']);
+Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::delete('logout', [AdminsController::class, 'logout']);
-    Route::get('dashboard', [AdminsController::class, 'dashboard']);
+Route::middleware(['auth:admins'])->group(function () {
+    Route::delete('logout', [AuthController::class, 'logout']);
+    Route::apiResource('admins', AdminsController::class);
 });
 
 
