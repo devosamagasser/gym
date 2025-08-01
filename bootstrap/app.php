@@ -1,6 +1,7 @@
 <?php
 
 use App\Facades\ApiResponse;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\UnauthorizedException;
@@ -22,6 +23,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'abilities' => CheckAbilities::class,
             'ability' => CheckForAnyAbility::class,
+            'locale' => SetLocale::class,
+        ]);
+        $middleware->group('api', [
+            'locale',
+        ]);
+        $middleware->group('dashboard', [
+            'locale',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
