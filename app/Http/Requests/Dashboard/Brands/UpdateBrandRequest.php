@@ -15,9 +15,8 @@ class UpdateBrandRequest extends AbstractApiRequest
     {
         return [
             'is_active' => 'sometimes|boolean',
-            'translations.en.name' => 'sometimes|required|string|max:255',
+            'name' => 'sometimes|required|string|max:255',
             'translations.en.description' => 'nullable|string',
-            'translations.ar.name' => 'sometimes|required|string|max:255',
             'translations.ar.description' => 'nullable|string',
         ];
     }

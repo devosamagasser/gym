@@ -17,7 +17,6 @@ class BrandResource extends JsonResource
             'products_count' => $this->products_count ?? $this->products()->count(),
             'translations' => $this->translations->mapWithKeys(fn($t) => [
                 $t->locale => [
-                    'name' => $t->name,
                     'description' => $t->description,
                 ],
             ]),
