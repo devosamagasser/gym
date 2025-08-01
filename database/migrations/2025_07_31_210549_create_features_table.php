@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('product_translations', function (Blueprint $table) {
+        Schema::create('feature_translations', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Feature::class)->constrained()->cascadeOnDelete();
             $table->char('locale',5)->index();
@@ -32,6 +32,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('feature_translations');
         Schema::dropIfExists('features');
     }
 };

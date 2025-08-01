@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Dashboard\Categories;
 
 use App\Http\Requests\AbstractApiRequest;
 
@@ -19,7 +19,6 @@ class UpdateCategoryRequest extends AbstractApiRequest
             'translations.en.description' => 'nullable|string',
             'translations.ar.name' => 'sometimes|required|string|max:255',
             'translations.ar.description' => 'nullable|string',
-            'cover' => 'nullable|image',
         ];
     }
 }
