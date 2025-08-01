@@ -2,65 +2,87 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Models\Brand;
-use Illuminate\Http\Request;
+use App\Facades\ApiResponse;
+use App\Services\BrandService;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BrandResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Requests\Dashboard\Brands\StoreBrandRequest;
+use App\Http\Requests\Dashboard\Brands\UpdateBrandRequest;
+use App\Http\Requests\Dashboard\Brands\UpdateBrandCoverRequest;
 
 class BrandController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(protected BrandService $service)
+    {
+    }
+
     public function index()
     {
-        //
+        $brands = $this->service->list();
+        return ApiResponse::success(BrandResource::collection($brands)->resource);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StoreBrandRequest $request)
     {
-        //
+        try {
+            $brand = $this->service->create($request->validated());
+            return ApiResponse::created(new BrandResource($brand));
+        } catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show(string $id)
     {
-        //
+        try {
+            $brand = $this->service->find($id);
+            $brand->loadCount('products');
+            $brand->load('translations');
+            return ApiResponse::success(new BrandResource($brand));
+        }catch (ModelNotFoundException $e) {
+            return ApiResponse::notFound('Admin not found.');
+        } catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Brand $brand)
+    public function update(UpdateBrandRequest $request, string $id)
     {
-        //
+        try {
+            $brand = $this->service->find($id);
+            $brand = $this->service->update($brand, $request->validated());
+            return ApiResponse::updated(new BrandResource($brand));
+        }catch (ModelNotFoundException $e) {
+            return ApiResponse::notFound('Admin not found.');
+        } catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Brand $brand)
+    public function updateCover(UpdateBrandCoverRequest $request, string $id)
     {
-        //
+        try {
+            $brand = $this->service->find($id);
+            $brand = $this->service->updateCover($brand, $request->validated()['cover']);
+            return ApiResponse::message('Cover updated successfully.');
+        }catch (ModelNotFoundException $e) {
+            return ApiResponse::notFound('Admin not found.');
+        } catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Brand $brand)
+    public function destroy(string $id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Brand $brand)
-    {
-        //
+        try {
+            $brand = $this->service->find($id);
+            $this->service->delete($brand);
+            return ApiResponse::deleted();
+        } catch (ModelNotFoundException $e) {
+            return ApiResponse::notFound('Admin not found.');
+        } catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 }

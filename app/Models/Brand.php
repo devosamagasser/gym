@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use EloquentFilter\Filterable;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use Astrotomic\Translatable\Translatable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Brand extends Model implements HasMedia
 {
-    use InteractsWithMedia;
-    protected $fillable = ['name', 'description', 'is_active'];
+    use Translatable, InteractsWithMedia, Filterable;
+
+    protected $fillable = ['is_active'];
+    public $translatedAttributes = ['name', 'description'];
 
     public function registerMediaCollections(): void
     {
