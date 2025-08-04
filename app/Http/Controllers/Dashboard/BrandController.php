@@ -41,7 +41,7 @@ class BrandController extends Controller
             $brand->load('translations');
             return ApiResponse::success(new BrandResource($brand));
         }catch (ModelNotFoundException $e) {
-            return ApiResponse::notFound('Admin not found.');
+            return ApiResponse::notFound('Brand not found.');
         } catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }
@@ -54,7 +54,7 @@ class BrandController extends Controller
             $brand = $this->service->update($brand, $request->validated());
             return ApiResponse::updated(new BrandResource($brand));
         }catch (ModelNotFoundException $e) {
-            return ApiResponse::notFound('Admin not found.');
+            return ApiResponse::notFound('Brand not found.');
         } catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }
@@ -67,7 +67,7 @@ class BrandController extends Controller
             $brand = $this->service->updateCover($brand, $request->validated()['cover']);
             return ApiResponse::message('Cover updated successfully.');
         }catch (ModelNotFoundException $e) {
-            return ApiResponse::notFound('Admin not found.');
+            return ApiResponse::notFound('Brand not found.');
         } catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }
@@ -80,7 +80,7 @@ class BrandController extends Controller
             $this->service->delete($brand);
             return ApiResponse::deleted();
         } catch (ModelNotFoundException $e) {
-            return ApiResponse::notFound('Admin not found.');
+            return ApiResponse::notFound('Brand not found.');
         } catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }

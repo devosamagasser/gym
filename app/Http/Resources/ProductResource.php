@@ -18,8 +18,12 @@ class ProductResource extends JsonResource
             'is_active' => (bool) $this->is_active,
             'cover_url' => $this->getFirstMediaUrl('cover'),
             'gallery_urls' => $this->getMedia('gallery')->map->getUrl(),
-            'category' => new CategoryResource($this->whenLoaded('category')),
-            'brand' => new BrandResource($this->whenLoaded('brand')),
+            'category' => $this->whenLoaded('category',function () {
+               return new CategoryResource($this->category);
+            }),
+            'brand' => $this->whenLoaded('brand',function () {
+               return new BrandResource($this->brand);
+            }),
             'translations' => $this->translations->mapWithKeys(fn($t) => [
                 $t->locale => [
                     'name' => $t->name,

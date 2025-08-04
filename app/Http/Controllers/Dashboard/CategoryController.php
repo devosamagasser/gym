@@ -38,10 +38,11 @@ class CategoryController extends Controller
         try {
             $category = $this->service->find($id);
             $category->loadCount('products');
+            $category->load('products');
             $category->load('translations');
             return ApiResponse::success(new CategoryResource($category));
         }catch (ModelNotFoundException $e) {
-            return ApiResponse::notFound('Admin not found.');
+            return ApiResponse::notFound('Category not found.');
         } catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }
@@ -54,7 +55,7 @@ class CategoryController extends Controller
             $category = $this->service->update($category, $request->validated());
             return ApiResponse::updated(new CategoryResource($category));
         }catch (ModelNotFoundException $e) {
-            return ApiResponse::notFound('Admin not found.');
+            return ApiResponse::notFound('Category not found.');
         } catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }
@@ -67,7 +68,7 @@ class CategoryController extends Controller
             $category = $this->service->updateCover($category, $request->validated()['cover']);
             return ApiResponse::message('Cover updated successfully.');
         }catch (ModelNotFoundException $e) {
-            return ApiResponse::notFound('Admin not found.');
+            return ApiResponse::notFound('Category not found.');
         } catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }
@@ -80,7 +81,7 @@ class CategoryController extends Controller
             $this->service->delete($category);
             return ApiResponse::deleted();
         } catch (ModelNotFoundException $e) {
-            return ApiResponse::notFound('Admin not found.');
+            return ApiResponse::notFound('Category not found.');
         } catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }

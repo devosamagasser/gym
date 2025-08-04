@@ -28,7 +28,19 @@ class ProductFilter extends ModelFilter
 
     public function sale($value)
     {
-        return $this->whereNotNull('sale');
+        if ($value === 'true') {
+            return $this->whereNotNull('sale');
+        }
+    }
+
+    public function category($value)
+    {
+        return $this->where('category_id',$value);
+    }
+
+    public function brand($value)
+    {
+        return $this->where('brand_id', $value);
     }
 
 }
