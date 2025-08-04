@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Product;
 use EloquentFilter\Filterable;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
