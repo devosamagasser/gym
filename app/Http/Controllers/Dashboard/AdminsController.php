@@ -13,6 +13,9 @@ class AdminsController extends Controller
 {
     public function index()
     {
+        if (! auth()->user()->hasRole('super_admin')) {
+            return ApiResponse::forbidden();
+        }
         $limit = request()->query('limit', 10);
         $admins = Admin::filter(request()->all())->paginate($limit);
         return ApiResponse::success($admins);
@@ -67,6 +70,9 @@ class AdminsController extends Controller
     public function destroy(string $id)
     {
         try {
+            if (! auth()->user()->hasRole('super_admin')) {
+                return ApiResponse::forbidden();
+            }
             $admin = Admin::findOrFail($id);
             $admin->delete();
             return ApiResponse::deleted();

@@ -14,6 +14,13 @@ class OrderResource extends JsonResource
             'status' => $this->status,
             'payment_method' => $this->payment_method,
             'paid_at' => $this->paid_at,
+            'user' => $this->whenLoaded('user', function () {
+                return [
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
+                    'email' => $this->user->email,
+                ];
+            }),
             'products' => $this->whenLoaded('products', function () {
                 return $this->products->map(function ($product) {
                     return [

@@ -68,7 +68,7 @@ class OrderService
 
     public function adminList(): Collection
     {
-        return Order::with(['user', 'products'])->latest()->get();
+        return Order::with(['user'])->latest()->get();
     }
 
     public function adminFind(int $id): Order
@@ -80,9 +80,12 @@ class OrderService
         return $order;
     }
 
-    public function updateStatus(Order $order, array $data): Order
+    public function updateStatus(Order $order): Order
     {
-        $order->update($data);
+        $order->update([
+            'status' => 'paid',
+            'paid_at' => now()
+        ]);
         return $order->refresh()->load(['user', 'products']);
     }
 }

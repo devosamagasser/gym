@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Facades\ApiResponse;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Dashboard\Orders\UpdateOrderStatusRequest;
-use App\Http\Resources\Dashboard\OrderResource;
+use Illuminate\Http\Request;
 use App\Services\OrderService;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\OrderResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Requests\Dashboard\Orders\UpdateOrderStatusRequest;
 
 class OrderController extends Controller
 {
@@ -33,11 +34,11 @@ class OrderController extends Controller
         }
     }
 
-    public function update(UpdateOrderStatusRequest $request, $id)
+    public function paid(Request $request, $id)
     {
         try {
             $order = $this->service->adminFind($id);
-            $order = $this->service->updateStatus($order, $request->validated());
+            $order = $this->service->updateStatus($order);
             return ApiResponse::updated(new OrderResource($order));
         } catch (ModelNotFoundException $e) {
             return ApiResponse::notFound('Order not found.');

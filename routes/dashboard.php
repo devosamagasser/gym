@@ -20,7 +20,8 @@ Route::middleware(['auth:admins'])->group(function () {
     Route::apiResource('products', ProductController::class);
     Route::post('brands/{brand}/cover', [ProductController::class, 'updateCover']);
     Route::post('brands/{brand}/gallery', [ProductController::class, 'updateGallery']);
-    Route::apiResource('orders', OrderController::class)->only(['index', 'show', 'update']);
+    Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
+    Route::put('orders/{id}/paid', [OrderController::class, 'paid']);
 });
 
 
