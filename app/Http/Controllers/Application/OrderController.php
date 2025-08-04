@@ -11,9 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrderController extends Controller
 {
-    public function __construct(protected OrderService $service)
-    {
-    }
+    public function __construct(protected OrderService $service) {}
 
     public function index()
     {
