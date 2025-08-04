@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Astrotomic\Translatable\Translatable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Feature;
+use App\Models\ProductFeatureValues;
 
 class Product extends Model implements HasMedia
 {
@@ -49,5 +51,16 @@ class Product extends Model implements HasMedia
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function features()
+    {
+        return $this->belongsToMany(Feature::class, 'product_feature_values')
+                    ->withPivot('value');
+    }
+
+    public function featureValues()
+    {
+        return $this->hasMany(ProductFeatureValues::class);
     }
 }

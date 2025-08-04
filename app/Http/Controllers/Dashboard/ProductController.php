@@ -2,66 +2,73 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Models\Product;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
+use App\Facades\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\Products\StoreProductRequest;
+use App\Http\Requests\Dashboard\Products\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Services\ProductService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(protected ProductService $service)
+    {
+    }
+
     public function index()
     {
-        //
+        $products = $this->service->list();
+        return ApiResponse::success(ProductResource::collection($products)->resource);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreProductRequest $request)
     {
-        //
+        try {
+            $product = $this->service->create($request->validated());
+            return ApiResponse::created(new ProductResource($product));
+        } catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
+    public function show(string $id)
     {
-        //
+        try {
+            $product = $this->service->find($id);
+            $product->load(['translations', 'category', 'brand']);
+            return ApiResponse::success(new ProductResource($product));
+        } catch (ModelNotFoundException $e) {
+            return ApiResponse::notFound('Product not found.');
+        } catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
+    public function update(UpdateProductRequest $request, string $id)
     {
-        //
+        try {
+            $product = $this->service->find($id);
+            $product = $this->service->update($product, $request->validated());
+            return ApiResponse::updated(new ProductResource($product));
+        } catch (ModelNotFoundException $e) {
+            return ApiResponse::notFound('Product not found.');
+        } catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function destroy(string $id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
+        try {
+            $product = $this->service->find($id);
+            $this->service->delete($product);
+            return ApiResponse::deleted();
+        } catch (ModelNotFoundException $e) {
+            return ApiResponse::notFound('Product not found.');
+        } catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 }
+
