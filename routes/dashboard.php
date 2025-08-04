@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\AdminsController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\BrandController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\OrderController;
 
 Route::post('login', [AuthController::class, 'login']);
 
@@ -19,6 +20,7 @@ Route::middleware(['auth:admins'])->group(function () {
     Route::apiResource('products', ProductController::class);
     Route::post('brands/{brand}/cover', [ProductController::class, 'updateCover']);
     Route::post('brands/{brand}/gallery', [ProductController::class, 'updateGallery']);
+    Route::apiResource('orders', OrderController::class)->only(['index', 'show', 'update']);
 });
 
 

@@ -65,4 +65,24 @@ class OrderService
         }
         return $order;
     }
+
+    public function adminList(): Collection
+    {
+        return Order::with(['user', 'products'])->latest()->get();
+    }
+
+    public function adminFind(int $id): Order
+    {
+        $order = Order::with(['user', 'products'])->find($id);
+        if (! $order) {
+            throw new ModelNotFoundException('Order not found.');
+        }
+        return $order;
+    }
+
+    public function updateStatus(Order $order, array $data): Order
+    {
+        $order->update($data);
+        return $order->refresh()->load(['user', 'products']);
+    }
 }
