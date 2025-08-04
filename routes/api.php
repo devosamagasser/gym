@@ -6,6 +6,8 @@ use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Application\Auth\AuthController;
 use App\Http\Controllers\Application\Auth\ResetPasswordController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Application\CartController;
+use App\Http\Controllers\Application\OrderController;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('signup', [AuthController::class, 'signUp']);
@@ -29,6 +31,8 @@ showing('products', ProductController::class);
 
 Route::group(['middleware' => ['auth:sanctum', 'abilities:verified']], function () {
     Route::delete('logout', [AuthController::class, 'logout']);
+    Route::apiResource('cart', CartController::class)->only(['index','store','update','destroy']);
+    Route::apiResource('orders', OrderController::class)->only(['index','store','show']);
 });
 
 
