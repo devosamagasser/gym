@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\BrandController;
+use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Application\Auth\AuthController;
 use App\Http\Controllers\Application\Auth\ResetPasswordController;
-use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('signup', [AuthController::class, 'signUp']);
@@ -21,7 +23,11 @@ Route::prefix('password')->group(function (){
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'abilities:verified']], function () {
-    Route::post('logout', [AuthController::class, 'logout']);
+    Route::delete('logout', [AuthController::class, 'logout']);
+    Route::get('categories', [CategoryController::class, 'index']);
+    Route::get('categories/{id}', [CategoryController::class, 'show']);
+    Route::get('brands', [BrandController::class, 'index']);
+    Route::get('brands/{id}', [BrandController::class, 'show']);
 });
 
 

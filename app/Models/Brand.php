@@ -12,8 +12,8 @@ class Brand extends Model implements HasMedia
 {
     use Translatable, InteractsWithMedia, Filterable;
 
-    protected $fillable = ['is_active'];
-    public $translatedAttributes = ['name', 'description'];
+    protected $fillable = ['name', 'is_active'];
+    public $translatedAttributes = ['description'];
 
     public function registerMediaCollections(): void
     {
@@ -24,7 +24,5 @@ class Brand extends Model implements HasMedia
     {
         return $this->hasMany(Product::class);
     }
-
-
 
 }

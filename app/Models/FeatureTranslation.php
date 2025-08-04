@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BrandTranslation extends Model
+class CategoryTranslation extends Model
 {
     public $timestamps = false;
 
-    protected $fillable = ['description'];
+    protected $fillable = ['name'];
 }

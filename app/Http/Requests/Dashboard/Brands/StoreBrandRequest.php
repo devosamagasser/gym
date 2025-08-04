@@ -15,9 +15,8 @@ class StoreBrandRequest extends AbstractApiRequest
     {
         return [
             'is_active' => 'nullable|boolean',
-            'translations.en.name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'translations.en.description' => 'nullable|string',
-            'translations.ar.name' => 'required|string|max:255',
             'translations.ar.description' => 'nullable|string',
             'cover' => 'nullable|image|max:2048',
         ];

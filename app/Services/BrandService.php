@@ -26,7 +26,6 @@ class BrandService
             $translations = Arr::pull($data, 'translations', []);
             $brand = Brand::create($data);
             $this->fillTranslations($brand, $translations);
-
             $brand->save();
 
             if (isset($data['cover'])) {
