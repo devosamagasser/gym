@@ -6,6 +6,7 @@ use App\Models\Cart;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class CartService
 {
@@ -19,19 +20,22 @@ class CartService
     public function add(int $userId, array $data): Cart
     {
         return DB::transaction(function () use ($userId, $data) {
-            $quantity = $data['quantity'] ?? 1;
             $cart = Cart::where('user_id', $userId)
                         ->where('product_id', $data['product_id'])
-                        ->first();
+                        ->exists();
 
             if ($cart) {
-                $cart->increment('quantity', $quantity);
-                $cart->refresh();
-            } else {
-                $data['user_id'] = $userId;
-                $data['quantity'] = $quantity;
-                $cart = Cart::create($data);
+                throw new HttpException(409, 'Product already exists in cart.');
+            } 
+            
+            $product = ProductService::find($data['product_id']);
+
+            if ($product->stock < $data['quantity']) {
+                throw new HttpException(400, 'Requested quantity exceeds available stock.');
             }
+            $data['user_id'] = $userId;
+            $cart = Cart::create($data);
+            
 
             return $cart->load('product');
         });
@@ -39,6 +43,9 @@ class CartService
 
     public function update(Cart $cart, array $data): Cart
     {
+        if ($cart->product->stock < $data['quantity']) {
+            throw new HttpException(400, 'Requested quantity exceeds available stock.');
+        }
         $cart->update($data);
         return $cart->load('product');
     }

@@ -15,7 +15,7 @@ class StoreCartRequest extends AbstractApiRequest
     {
         return [
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'sometimes|integer|min:1',
+            'quantity' => 'required|integer|min:1',
         ];
     }
 }

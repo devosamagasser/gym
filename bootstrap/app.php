@@ -10,6 +10,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -48,6 +49,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (UnauthorizedException $e, $request) {
             return ApiResponse::unauthorized();
+        });
+
+        $exceptions->render(function (ModelNotFoundException $e, $request) {
+            return ApiResponse::notFound($e->getMessage());
         });
 
 

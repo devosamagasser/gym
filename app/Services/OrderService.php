@@ -13,7 +13,6 @@ class OrderService
     public function list(int $userId): Collection
     {
         return Order::where('user_id', $userId)
-            ->with('products')
             ->latest()
             ->get();
     }
@@ -28,7 +27,7 @@ class OrderService
         return DB::transaction(function () use ($userId, $data, $cartItems) {
             $total = 0;
             foreach ($cartItems as $item) {
-                $price = $item->product->sale ?? $item->product->price;
+                $price = $item->product->price - $item->product->sale;
                 if ($item->product->stock < $item->quantity) {
                     throw new ModelNotFoundException('Insufficient stock for product '.$item->product_id);
                 }

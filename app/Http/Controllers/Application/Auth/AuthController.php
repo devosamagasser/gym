@@ -40,7 +40,8 @@ class AuthController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return ApiResponse::serverError('An error occurred while signing up. Please try again later.');
+            // return ApiResponse::serverError('An error occurred while signing up. Please try again later.');
+            return ApiResponse::serverError($e->getMessage());
         }
     }
 

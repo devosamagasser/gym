@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Application;
 
 use App\Facades\ApiResponse;
+use App\Services\CartService;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CartResource;
 use App\Http\Requests\Cart\StoreCartRequest;
 use App\Http\Requests\Cart\UpdateCartRequest;
-use App\Http\Resources\CartResource;
-use App\Services\CartService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class CartController extends Controller
 {
@@ -20,7 +21,7 @@ class CartController extends Controller
     {
         $items = $this->service->list(auth()->id());
         $total = $items->sum(function ($item) {
-            $price = $item->product->sale ?? $item->product->price;
+            $price =  $item->product->price - $item->product->sale ;
             return $price * $item->quantity;
         });
         return ApiResponse::success([
@@ -34,6 +35,8 @@ class CartController extends Controller
         try {
             $cart = $this->service->add(auth()->id(), $request->validated());
             return ApiResponse::created(new CartResource($cart));
+        } catch (HttpException $e) {
+            return ApiResponse::message($e->getMessage(),$e->getStatusCode());
         } catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }
@@ -45,7 +48,9 @@ class CartController extends Controller
             $cart = $this->service->findForUser($id, auth()->id());
             $cart = $this->service->update($cart, $request->validated());
             return ApiResponse::updated(new CartResource($cart));
-        } catch (ModelNotFoundException $e) {
+        } catch (HttpException $e) {
+            return ApiResponse::message($e->getMessage(),$e->getStatusCode());
+        }catch (ModelNotFoundException $e) {
             return ApiResponse::notFound('Cart item not found.');
         } catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());

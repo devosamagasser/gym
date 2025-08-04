@@ -70,7 +70,7 @@ class ProductService
         $product->delete();
     }
 
-    public function find(string $id, $isActive = false): Product
+    public static function find(string $id, $isActive = false): Product
     {
         try {
             return Product::when($isActive, function($q){
