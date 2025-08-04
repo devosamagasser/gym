@@ -12,12 +12,23 @@ class CategoryService
 {
     use TranslationTrait;
 
-    public function list(array $filters = [])
+    public function list()
     {
         $limit = request()->query('limit', 10);
-        return Category::filter(request()->all())
-                    ->withCount('products')
-                    ->paginate($limit);
+        $fields = explode(',', request()->query('fields', '*'));
+
+        $query = Category::filter(request()->all())
+                    ->withCount('products');
+
+        $allowedFields = ['id', 'is_active', 'created_at', 'updated_at']; 
+
+        $selectedFields = array_intersect($fields, $allowedFields);
+
+        if (!empty($selectedFields)) {
+            $query->select($selectedFields);
+        }
+
+        return $query->paginate($limit);
     }
 
     public function create(array $data): Category

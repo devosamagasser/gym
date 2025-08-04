@@ -17,6 +17,8 @@ Route::middleware(['auth:admins'])->group(function () {
     Route::apiResource('brands', BrandController::class);
     Route::post('brands/{brand}/cover', [BrandController::class, 'updateCover']);
     Route::apiResource('products', ProductController::class);
+    Route::post('brands/{brand}/cover', [ProductController::class, 'updateCover']);
+    Route::post('brands/{brand}/gallery', [ProductController::class, 'updateGallery']);
 });
 
 

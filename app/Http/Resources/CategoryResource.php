@@ -14,7 +14,7 @@ class CategoryResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $allData = [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
@@ -29,7 +29,15 @@ class CategoryResource extends JsonResource
             ]),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            // 'products' => ProductResource::collection($this->whenLoaded('products')),
+            'products' => ProductResource::collection($this->whenLoaded('products')),
         ];
+
+        $requestedFields = explode(',', $request->query('fields', ''));
+
+        if (empty($requestedFields[0])) {
+            return $allData;
+        }
+
+        return collect($allData)->only($requestedFields)->all();
     }
 }

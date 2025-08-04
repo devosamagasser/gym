@@ -14,19 +14,16 @@ class UpdateProductRequest extends AbstractApiRequest
     public function rules(): array
     {
         return [
-            'price' => 'sometimes|required|numeric',
+            'price' => 'required|numeric',
             'sale' => 'nullable|numeric|lt:price',
-            'stock' => 'sometimes|required|integer',
-            'is_active' => 'sometimes|boolean',
-            'category_id' => 'sometimes|required|exists:categories,id',
-            'brand_id' => 'sometimes|required|exists:brands,id',
-            'translations.en.name' => 'sometimes|required|string|max:255',
+            'stock' => 'required|integer',
+            'is_active' => 'required|boolean',
+            'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'required|exists:brands,id',
+            'translations.en.name' => 'required|string|max:255',
             'translations.en.description' => 'nullable|string',
-            'translations.ar.name' => 'sometimes|required|string|max:255',
+            'translations.ar.name' => 'required|string|max:255',
             'translations.ar.description' => 'nullable|string',
-            'cover' => 'sometimes|image|max:2048',
-            'gallery' => 'sometimes|array',
-            'gallery.*' => 'image|max:2048',
         ];
     }
 }

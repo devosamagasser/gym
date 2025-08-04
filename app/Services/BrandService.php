@@ -12,12 +12,19 @@ class BrandService
 {
     use TranslationTrait;
 
-    public function list(array $filters = [])
+    public function list()
     {
         $limit = request()->query('limit', 10);
-        return Brand::filter(request()->all())
-                    ->withCount('products')
-                    ->paginate($limit);
+        $fields = explode(',', request()->query('fields', '*'));
+
+        $query = Brand::filter(request()->all())
+                        ->withCount('products');
+
+        if ($fields !== ['*']) {
+            $query->select($fields);
+        }
+
+        return $query->paginate($limit);
     }
 
     public function create(array $data): Brand

@@ -16,7 +16,9 @@ class CategoryFilter extends ModelFilter
 
     public function name($value)
     {
-        return $this->whereLike('name', "%$value%");
+        return $this->whereHas('translations', function ($query) use ($value) {
+            $query->where('name', 'like', "%{$value}%");
+        });
     }
 
     public function isActive($value)

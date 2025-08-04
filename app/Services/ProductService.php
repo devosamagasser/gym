@@ -12,10 +12,10 @@ class ProductService
 {
     use TranslationTrait;
 
-    public function list(array $filters = [])
+    public function list()
     {
         $limit = request()->query('limit', 10);
-        return Product::with(['category', 'brand'])->paginate($limit);
+        return Product::filter(request()->all())->with(['category', 'brand'])->paginate($limit);
     }
 
     public function create(array $data): Product
@@ -29,12 +29,9 @@ class ProductService
             $product->save();
 
             if (isset($data['cover'])) {
-                $product->addMedia($data['cover'])->toMediaCollection('cover');
+                $this->addCover($product, $data['cover']);
             }
-
-            foreach ($gallery as $image) {
-                $product->addMedia($image)->toMediaCollection('gallery');
-            }
+            $this->addGalery($product, $gallery);
 
             return $product;
         });
@@ -44,24 +41,27 @@ class ProductService
     {
         return DB::transaction(function () use ($product, $data) {
             $translations = Arr::pull($data, 'translations', []);
-            $gallery = Arr::pull($data, 'gallery', null);
-
-            if (isset($data['cover'])) {
-                $product->clearMediaCollection('cover');
-                $product->addMedia($data['cover'])->toMediaCollection('cover');
-            }
-
-            if ($gallery !== null) {
-                $product->clearMediaCollection('gallery');
-                foreach ($gallery as $image) {
-                    $product->addMedia($image)->toMediaCollection('gallery');
-                }
-            }
-
             $product->update($data);
             $this->fillTranslations($product, $translations);
             $product->save();
+            return $product;
+        });
+    }
 
+    public function updateCover(Product $product, $cover): Product
+    {
+        return DB::transaction(function () use ($product, $cover) {
+            $product->clearMediaCollection('cover');
+            $this->addCover($product, $cover);
+            return $product;
+        });
+    }
+
+    public function updateGalery(Product $product, $gallery): Product
+    {
+        return DB::transaction(function () use ($product, $gallery) {
+            $product->clearMediaCollection('gallery');
+            $this->addGalery($product, $gallery);
             return $product;
         });
     }
@@ -77,6 +77,18 @@ class ProductService
             return Product::findOrFail($id);
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException("Product not found with ID: {$id}");
+        }
+    }
+
+    private function addCover($product, $cover)
+    {
+        $product->addMedia($cover)->toMediaCollection('cover');
+    }
+
+    private function addGalery($product, $gallery)
+    {
+        foreach ($gallery as $image) {
+            $product->addMedia($image)->toMediaCollection('gallery');
         }
     }
 }

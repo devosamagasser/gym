@@ -9,11 +9,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Feature;
 use App\Models\ProductFeatureValues;
+use EloquentFilter\Filterable;
 
 class Product extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory, Translatable, InteractsWithMedia;
+    use HasFactory, Translatable, InteractsWithMedia, Filterable;
 
     protected $fillable = [
         'price',

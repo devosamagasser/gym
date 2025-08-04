@@ -8,7 +8,7 @@ class BrandResource extends JsonResource
 {
     public function toArray($request)
     {
-        return [
+        $allData = [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
@@ -23,5 +23,15 @@ class BrandResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
+
+            $requestedFields = explode(',', $request->query('fields', ''));
+
+    // لو مفيش فيلدز محددة رجّع الكل
+        if (empty($requestedFields[0])) {
+            return $allData;
+        }
+
+        // فلترة الفيلدز المطلوبة فقط
+        return collect($allData)->only($requestedFields)->all();
     }
 }
