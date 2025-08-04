@@ -14,8 +14,6 @@ class Product extends Model implements HasMedia
     use HasFactory, Translatable, InteractsWithMedia;
 
     protected $fillable = [
-        'name',
-        'description',
         'price',
         'sale',
         'stock',
@@ -38,8 +36,10 @@ class Product extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('photos');
+        $this->addMediaCollection('cover')->singleFile(); 
+        $this->addMediaCollection('gallery');
     }
+
 
     public function category()
     {

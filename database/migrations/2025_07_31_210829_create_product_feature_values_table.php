@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignIdFor(Feature::class)->constrained()->cascadeOnDelete();
             $table->string('value')->nullable();
             $table->unique(['product_id', 'feature_id']);
-            $table->timestamps();
         });
     }
 
