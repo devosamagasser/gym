@@ -12,10 +12,9 @@ class ProductService
 {
     use TranslationTrait;
 
-    public function list()
+    public function list($filter = [], $limit = 10): \Illuminate\Pagination\LengthAwarePaginator
     {
-        $limit = request()->query('limit', 10);
-        return Product::filter(request()->all())->with(['category', 'brand'])->paginate($limit);
+        return Product::filter($filter)->with(['category', 'brand'])->paginate($limit);
     }
 
     public function create(array $data): Product
@@ -71,10 +70,14 @@ class ProductService
         $product->delete();
     }
 
-    public function find(string $id): Product
+    public function find(string $id, $isActive = false): Product
     {
         try {
-            return Product::findOrFail($id);
+            return Product::when($isActive, function($q){
+                return $q->where('is_active', true);
+            })
+            ->where('id', $id)
+            ->firstOrFail();
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException("Product not found with ID: {$id}");
         }

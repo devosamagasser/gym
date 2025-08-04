@@ -12,16 +12,14 @@ class CategoryService
 {
     use TranslationTrait;
 
-    public function list()
+    public function list($filter = [], $limit = 10)
     {
-        $limit = request()->query('limit', 10);
         $fields = explode(',', request()->query('fields', '*'));
 
-        $query = Category::filter(request()->all())
+        $query = Category::filter($filter)
                     ->withCount('products');
 
         $allowedFields = ['id', 'is_active', 'created_at', 'updated_at']; 
-
         $selectedFields = array_intersect($fields, $allowedFields);
 
         if (!empty($selectedFields)) {
@@ -73,10 +71,14 @@ class CategoryService
     }
 
 
-    public function find(string $id)
+    public function find(string $id, $isActive = false): Category
     {
         try {
-            return Category::findOrFail($id);
+            return Category::when($isActive, function($q){
+                return $q->where('is_active', true);
+            })
+            ->where('id', $id)
+            ->firstOrFail();
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException("Category not found with ID: {$id}");
         }

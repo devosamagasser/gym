@@ -20,7 +20,9 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = $this->service->list();
+        $filter = request()->all();
+        $limit = request()->query('limit', 10);
+        $products = $this->service->list($filter, $limit);
         return ApiResponse::success(ProductResource::collection($products)->resource);
     }
 

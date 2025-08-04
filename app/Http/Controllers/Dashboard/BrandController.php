@@ -19,7 +19,9 @@ class BrandController extends Controller
 
     public function index()
     {
-        $brands = $this->service->list();
+        $filter = request()->all();
+        $limit = request()->query('limit', 10);
+        $brands = $this->service->list($filter, $limit);
         return ApiResponse::success(BrandResource::collection($brands)->resource);
     }
 

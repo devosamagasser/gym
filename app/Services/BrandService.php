@@ -12,13 +12,12 @@ class BrandService
 {
     use TranslationTrait;
 
-    public function list()
+    public function list($filter = [], $limit = 10): \Illuminate\Pagination\LengthAwarePaginator
     {
-        $limit = request()->query('limit', 10);
         $fields = explode(',', request()->query('fields', '*'));
 
-        $query = Brand::filter(request()->all())
-                        ->withCount('products');
+        $query = Brand::filter($filter)
+                    ->withCount('products');
 
         if ($fields !== ['*']) {
             $query->select($fields);
@@ -68,10 +67,14 @@ class BrandService
     }
 
 
-    public function find(string $id)
+    public function find(string $id, $isActive = false)
     {
         try {
-            return Brand::findOrFail($id);
+            return Brand::when($isActive, function($q){
+                return $q->where('is_active', true);
+            })
+            ->where('id', $id)
+            ->firstOrFail();
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException("Brand not found with ID: {$id}");
         }
