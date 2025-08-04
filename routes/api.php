@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Dashboard\BrandController;
-use App\Http\Controllers\Dashboard\CategoryController;
+use App\Http\Controllers\Application\BrandController;
+use App\Http\Controllers\Application\CategoryController;
 use App\Http\Controllers\Application\Auth\AuthController;
 use App\Http\Controllers\Application\Auth\ResetPasswordController;
-use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Application\CartController;
 use App\Http\Controllers\Application\OrderController;
+use App\Http\Controllers\Application\ProductController;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('signup', [AuthController::class, 'signUp']);

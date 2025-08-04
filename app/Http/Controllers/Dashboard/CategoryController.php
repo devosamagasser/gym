@@ -19,7 +19,9 @@ class CategoryController extends Controller
 
     public function index()
     {   
-        $categories = $this->service->list();
+        $filter = request()->all();
+        $limit = request()->query('limit', 10);
+        $categories = $this->service->list($filter, $limit);
         return ApiResponse::success(CategoryResource::collection($categories)->resource);
     }
 
