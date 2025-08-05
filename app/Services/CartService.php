@@ -10,6 +10,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class CartService
 {
+
+    public function __construct(public ProductService $productService)
+    {
+        
+    }
+
     public function list(int $userId): Collection
     {
         return Cart::where('user_id', $userId)
@@ -28,15 +34,14 @@ class CartService
                 throw new HttpException(409, 'Product already exists in cart.');
             } 
             
-            $product = ProductService::find($data['product_id']);
+            $product = $this->productService->find($data['product_id']);
 
             if ($product->stock < $data['quantity']) {
-                throw new HttpException(400, 'Requested quantity exceeds available stock.');
+                throw new HttpException(400, "Requested quantity exceeds available stock, {$product->stock} available");
             }
             $data['user_id'] = $userId;
             $cart = Cart::create($data);
             
-
             return $cart->load('product');
         });
     }

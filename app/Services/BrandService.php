@@ -12,10 +12,8 @@ class BrandService
 {
     use TranslationTrait;
 
-    public function list($filter = [], $limit = 10): \Illuminate\Pagination\LengthAwarePaginator
+    public function list($filter = [], $limit = 10, $fields): \Illuminate\Pagination\LengthAwarePaginator
     {
-        $fields = explode(',', request()->query('fields', '*'));
-
         $query = Brand::filter($filter)
                     ->withCount('products');
 

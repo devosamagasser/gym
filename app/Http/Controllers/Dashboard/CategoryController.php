@@ -21,7 +21,8 @@ class CategoryController extends Controller
     {   
         $filter = request()->all();
         $limit = request()->query('limit', 10);
-        $categories = $this->service->list($filter, $limit);
+        $fields = request()->query('fields', '*');
+        $categories = $this->service->list($filter, $limit, $fields);
         return ApiResponse::success(CategoryResource::collection($categories)->resource);
     }
 

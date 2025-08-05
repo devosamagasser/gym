@@ -12,10 +12,8 @@ class CategoryService
 {
     use TranslationTrait;
 
-    public function list($filter = [], $limit = 10)
+    public function list($filter = [], $limit = 10, $fields)
     {
-        $fields = explode(',', request()->query('fields', '*'));
-
         $query = Category::filter($filter)
                     ->withCount('products');
 

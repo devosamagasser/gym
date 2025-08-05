@@ -21,7 +21,8 @@ class BrandController extends Controller
     {
         $filter = request()->all();
         $limit = request()->query('limit', 10);
-        $brands = $this->service->list($filter, $limit);
+        $fields = request()->query('fields', '*');
+        $brands = $this->service->list($filter, $limit, $fields);
         return ApiResponse::success(BrandResource::collection($brands)->resource);
     }
 
