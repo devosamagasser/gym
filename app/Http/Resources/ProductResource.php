@@ -24,12 +24,14 @@ class ProductResource extends JsonResource
             'brand' => $this->whenLoaded('brand',function () {
                return new BrandResource($this->brand);
             }),
-            'translations' => $this->translations->mapWithKeys(fn($t) => [
-                $t->locale => [
-                    'name' => $t->name,
-                    'description' => $t->description,
-                ],
-            ]),
+            'translations' => $this->whenLoaded('translations', fn () =>
+                $this->translations->mapWithKeys(fn($t) => [
+                    $t->locale => [
+                        'name' => $t->name,
+                        'description' => $t->description,
+                    ],
+                ])
+            ),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

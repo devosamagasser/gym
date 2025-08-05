@@ -21,12 +21,14 @@ class CategoryResource extends JsonResource
             'is_active' => (bool) $this->is_active,
             'cover_url' => $this->getFirstMediaUrl('cover'),
             'products_count' => $this->products_count ?? $this->products()->count(),
-            'translations' => $this->translations->mapWithKeys(fn($t) => [
-                $t->locale => [
-                    'name' => $t->name,
-                    'description' => $t->description,
-                ],
-            ]),
+            'translations' => $this->whenLoaded('translations', fn () =>
+                $this->translations->mapWithKeys(fn($t) => [
+                    $t->locale => [
+                        'name' => $t->name,
+                        'description' => $t->description,
+                    ],
+                ])
+            ),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'products' => $this->whenLoaded('products', function () {

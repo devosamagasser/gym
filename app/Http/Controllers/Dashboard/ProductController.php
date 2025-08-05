@@ -39,8 +39,7 @@ class ProductController extends Controller
     public function show(string $id)
     {
         try {
-            $product = $this->service->find($id);
-            $product->load(['translations', 'category', 'brand']);
+            $product = $this->service->find($id, with: ['translations', 'category', 'brand']);
             return ApiResponse::success(new ProductResource($product));
         } catch (ModelNotFoundException $e) {
             return ApiResponse::notFound('Product not found.');

@@ -29,10 +29,8 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         try {
-            $category = $this->service->find($id, true);
+            $category = $this->service->find($id, true, ['translations', 'products']);
             $category->loadCount('products');
-            $category->load('products');
-            $category->load('translations');
             return ApiResponse::success(new CategoryResource($category));
         }catch (ModelNotFoundException $e) {
             return ApiResponse::notFound('Category not found.');

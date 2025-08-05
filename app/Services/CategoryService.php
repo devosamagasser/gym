@@ -71,12 +71,13 @@ class CategoryService
     }
 
 
-    public function find(string $id, $isActive = false): Category
+    public function find(string $id, $isActive = false, array $with = []): Category
     {
         try {
             return Category::when($isActive, function($q){
                 return $q->where('is_active', true);
             })
+            ->with($with)
             ->where('id', $id)
             ->firstOrFail();
         } catch (ModelNotFoundException $e) {
