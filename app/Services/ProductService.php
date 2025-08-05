@@ -70,14 +70,16 @@ class ProductService
         $product->delete();
     }
 
-    public function find(string $id, $isActive = false): Product
+    public static function find(string $id, $isActive = false, array $with = []): Product
     {
         try {
             return Product::when($isActive, function($q){
                 return $q->where('is_active', true);
             })
-                ->where('id', $id)
-                ->firstOrFail();
+            ->with($with)
+            ->where('id', $id)
+            ->firstOrFail();
+
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException("Product not found with ID: {$id}");
         }
