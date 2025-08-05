@@ -30,7 +30,7 @@ class ProductService
             if (isset($data['cover'])) {
                 $this->addCover($product, $data['cover']);
             }
-            $this->addGalery($product, $gallery);
+            $this->addGallery($product, $gallery);
 
             return $product;
         });
@@ -56,11 +56,11 @@ class ProductService
         });
     }
 
-    public function updateGalery(Product $product, $gallery): Product
+    public function updateGallery(Product $product, $gallery): Product
     {
         return DB::transaction(function () use ($product, $gallery) {
             $product->clearMediaCollection('gallery');
-            $this->addGalery($product, $gallery);
+            $this->addGallery($product, $gallery);
             return $product;
         });
     }
@@ -70,14 +70,14 @@ class ProductService
         $product->delete();
     }
 
-    public static function find(string $id, $isActive = false): Product
+    public function find(string $id, $isActive = false): Product
     {
         try {
             return Product::when($isActive, function($q){
                 return $q->where('is_active', true);
             })
-            ->where('id', $id)
-            ->firstOrFail();
+                ->where('id', $id)
+                ->firstOrFail();
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException("Product not found with ID: {$id}");
         }
@@ -88,7 +88,7 @@ class ProductService
         $product->addMedia($cover)->toMediaCollection('cover');
     }
 
-    private function addGalery($product, $gallery)
+    private function addGallery($product, $gallery)
     {
         foreach ($gallery as $image) {
             $product->addMedia($image)->toMediaCollection('gallery');

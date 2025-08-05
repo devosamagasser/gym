@@ -79,7 +79,7 @@ class ProductController extends Controller
     {
         try {
             $product = $this->service->find($id);
-            $product = $this->service->updateGalery($product, $request->validated()['gallery']);
+            $product = $this->service->updateGallery($product, $request->validated()['gallery']);
             return ApiResponse::message('gallery updated successfully.');
         }catch (ModelNotFoundException $e) {
             return ApiResponse::notFound('Admin not found.');
