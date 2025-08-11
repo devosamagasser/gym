@@ -15,6 +15,8 @@ class StoreOrderRequest extends AbstractApiRequest
     {
         return [
             'payment_method' => 'required|in:cash,visa,wallet',
+            'name' => 'required|string|max:200',
+            'phone' => 'required|string|max:20'
         ];
     }
 }

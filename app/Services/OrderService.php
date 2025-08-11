@@ -27,15 +27,17 @@ class OrderService
         return DB::transaction(function () use ($userId, $data, $cartItems) {
             $total = 0;
             foreach ($cartItems as $item) {
-                $price = $item->product->price - $item->product->sale;
                 if ($item->product->stock < $item->quantity) {
                     throw new ModelNotFoundException('Insufficient stock for product '.$item->product_id);
                 }
+                $price = $item->product->price - $item->product->sale;
                 $total += $price * $item->quantity;
             }
 
             $order = Order::create([
                 'user_id' => $userId,
+                'name' => $data['name'],
+                'phone' => $data['phone'],
                 'total_price' => $total,
                 'payment_method' => $data['payment_method'],
             ]);
